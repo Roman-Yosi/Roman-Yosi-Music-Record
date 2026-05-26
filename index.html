@@ -1,132 +1,202 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Yosi Login</title>
 
-  <title>Login Roman Yosi</title>
+  <style>
 
-  <link rel="stylesheet" href="style.css">
+    body{
+      background:#111;
+      color:white;
+      font-family:Arial;
+      text-align:center;
+      padding:40px;
+    }
+
+    .box{
+      max-width:400px;
+      margin:auto;
+      background:#1d1d1d;
+      padding:30px;
+      border-radius:15px;
+    }
+
+    input{
+      width:100%;
+      padding:12px;
+      margin-top:15px;
+      border:none;
+      border-radius:8px;
+      box-sizing:border-box;
+    }
+
+    button{
+      width:100%;
+      padding:12px;
+      margin-top:15px;
+      border:none;
+      border-radius:8px;
+      background:#00aaff;
+      color:white;
+      cursor:pointer;
+    }
+
+    #status{
+      margin-top:20px;
+      color:#00ff99;
+    }
+
+  </style>
+
 </head>
 
 <body>
 
-  <header>
-    <h1>Login Account</h1>
-  </header>
+<div class="box">
 
-  <section class="upload-box">
+<h1>Login Account</h1>
 
-    <input type="email" id="email" placeholder="Email">
+<input type="email" id="email" placeholder="Email">
 
-    <input type="password" id="password" placeholder="Password">
+<input type="password" id="password" placeholder="Password">
 
-    <button onclick="register()">Register</button>
+<button id="registerBtn">Register</button>
 
-    <button onclick="login()">Login</button>
+<button id="loginBtn">Login</button>
 
-    <button onclick="logout()">Logout</button>
+<button id="logoutBtn">Logout</button>
 
-    <p id="status"></p>
+<p id="status"></p>
 
-  </section>
+</div>
 
-  <script type="module">
+<script type="module">
 
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyASJUy17H37jS_sgAJA49otBh6LDJ3QAII",
-      authDomain: "roman-yosi-music-record.firebaseapp.com",
-      projectId: "roman-yosi-music-record",
-      storageBucket: "roman-yosi-music-record.firebasestorage.app",
-      messagingSenderId: "422122061031",
-      appId: "1:422122061031:web:7f34069922208516043642",
-      measurementId: "G-Y8KMVOWCJ8"
-    };
+const firebaseConfig = {
 
-    const app = initializeApp(firebaseConfig);
+  apiKey: "AIzaSyASJUy17H37jS_sgAJA49otBh6LDJ3QAII",
 
-    const auth = getAuth(app);
+  authDomain:
+  "roman-yosi-music-record.firebaseapp.com",
 
-    window.register = function () {
+  projectId:
+  "roman-yosi-music-record",
 
-      const email = document.getElementById('email').value;
+  storageBucket:
+  "roman-yosi-music-record.firebasestorage.app",
 
-      const password = document.getElementById('password').value;
+  messagingSenderId:
+  "422122061031",
 
-      createUserWithEmailAndPassword(auth, email, password)
+  appId:
+  "1:422122061031:web:7f34069922208516043642"
 
-        .then(() => {
+};
 
-          document.getElementById('status').innerText =
-            'Register berhasil';
+const app = initializeApp(firebaseConfig);
 
-        })
+const auth = getAuth(app);
 
-        .catch((error) => {
+const status =
+document.getElementById("status");
 
-          document.getElementById('status').innerText =
-            error.message;
+document.getElementById("registerBtn")
+.addEventListener("click", ()=>{
 
-        });
+  const email =
+  document.getElementById("email").value;
 
-    }
+  const password =
+  document.getElementById("password").value;
 
-    window.login = function () {
+  createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  )
 
-      const email = document.getElementById('email').value;
+  .then(()=>{
 
-      const password = document.getElementById('password').value;
+    status.innerText =
+    "✅ Register berhasil";
 
-      signInWithEmailAndPassword(auth, email, password)
+  })
 
-        .then(() => {
+  .catch((error)=>{
 
-          document.getElementById('status').innerText =
-            'Login berhasil';
+    status.innerText =
+    error.message;
 
-        })
+  });
 
-        .catch((error) => {
+});
 
-          document.getElementById('status').innerText =
-            error.message;
+document.getElementById("loginBtn")
+.addEventListener("click", ()=>{
 
-        });
+  const email =
+  document.getElementById("email").value;
 
-    }
+  const password =
+  document.getElementById("password").value;
 
-    window.logout = function () {
+  signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  )
 
-      signOut(auth)
+  .then(()=>{
 
-        .then(() => {
+    status.innerText =
+    "✅ Login berhasil";
 
-          document.getElementById('status').innerText =
-            'Logout berhasil';
+  })
 
-        })
+  .catch((error)=>{
 
-        .catch((error) => {
+    status.innerText =
+    error.message;
 
-          document.getElementById('status').innerText =
-            error.message;
+  });
 
-        });
+});
 
-    }
+document.getElementById("logoutBtn")
+.addEventListener("click", ()=>{
 
-  </script>
+  signOut(auth)
+
+  .then(()=>{
+
+    status.innerText =
+    "✅ Logout berhasil";
+
+  })
+
+  .catch((error)=>{
+
+    status.innerText =
+    error.message;
+
+  });
+
+});
+
+</script>
 
 </body>
-
 </html>
