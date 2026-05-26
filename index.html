@@ -3,23 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Firebase Auth - Roman Yosi Music Record</title>
+  <title>Music Aggregator for Creators</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    #auth-section, #upload-section, #music-list {
+      margin-top: 30px;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    audio {
+      width: 100%;
+      margin-top: 5px;
+    }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
 </head>
 <body>
 
-  <h2>Firebase Authentication Demo</h2>
+  <h1>Music Aggregator for Creators</h1>
 
-  <div id="auth-container">
+  <!-- Authentication Section -->
+  <section id="auth-section">
+    <h2>Login / Register</h2>
     <input type="email" id="email" placeholder="Email" />
     <input type="password" id="password" placeholder="Password" />
-    <br /><br />
     <button onclick="register()">Register</button>
     <button onclick="login()">Login</button>
     <button onclick="loginWithGoogle()">Login with Google</button>
     <button onclick="logout()" style="display:none;" id="logout-btn">Logout</button>
-  </div>
+    <p id="auth-status">Not logged in</p>
+  </section>
 
-  <p id="status">Belum login</p>
+  <!-- Upload Section -->
+  <section id="upload-section" style="display:none;">
+    <h2>Upload Your Music</h2>
+    <input type="text" id="song-title" placeholder="Song Title" />
+    <input type="file" id="song-file" accept="audio/*" />
+    <button onclick="uploadSong()">Upload Song</button>
+    <p id="upload-status"></p>
+  </section>
+
+  <!-- Music List Section -->
+  <section id="music-list" style="display:none;">
+    <h2>Your Uploaded Songs</h2>
+    <ul id="songs-ul"></ul>
+  </section>
+
+  <p id="status"></p>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
@@ -33,29 +102,55 @@
       onAuthStateChanged
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      query,
+      where,
+      getDocs,
+      orderBy
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    // Ganti dengan konfigurasi Firebase Anda sendiri
     const firebaseConfig = {
-      apiKey: "AIzaSyASJUyi7H37jS_sgAJA49otBh6LDJ3QAiI",
-      authDomain: "roman-yosi-music-record.firebaseapp.com",
-      projectId: "roman-yosi-music-record",
-      storageBucket: "roman-yosi-music-record.firebasestorage.app",
-      messagingSenderId: "422122061031",
-      appId: "1:422122061031:web:7f3406992220a516e43642",
-      measurementId: "G-Y8KMVQWCJ8"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
+    const storage = getStorage(app);
+    const db = getFirestore(app);
+
+    const authStatus = document.getElementById('auth-status');
+    const logoutBtn = document.getElementById('logout-btn');
+    const uploadSection = document.getElementById('upload-section');
+    const musicListSection = document.getElementById('music-list');
+    const songsUl = document.getElementById('songs-ul');
+    const uploadStatus = document.getElementById('upload-status');
 
     window.register = function() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
-          document.getElementById('status').innerText = 'Register berhasil';
+          authStatus.textContent = 'Registered and logged in';
         })
         .catch(error => {
-          document.getElementById('status').innerText = error.message;
+          authStatus.textContent = 'Error: ' + error.message;
         });
     };
 
@@ -64,40 +159,109 @@
       const password = document.getElementById('password').value;
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          document.getElementById('status').innerText = 'Login berhasil';
+          authStatus.textContent = 'Logged in';
         })
         .catch(error => {
-          document.getElementById('status').innerText = error.message;
+          authStatus.textContent = 'Error: ' + error.message;
         });
     };
 
     window.loginWithGoogle = function() {
       signInWithPopup(auth, provider)
         .then(result => {
-          document.getElementById('status').innerText = 'Login berhasil: ' + result.user.email;
+          authStatus.textContent = 'Logged in as ' + result.user.email;
         })
         .catch(error => {
-          document.getElementById('status').innerText = error.message;
+          authStatus.textContent = 'Error: ' + error.message;
         });
     };
 
     window.logout = function() {
       signOut(auth)
         .then(() => {
-          document.getElementById('status').innerText = 'Logout berhasil';
+          authStatus.textContent = 'Logged out';
         });
     };
 
     onAuthStateChanged(auth, user => {
-      const logoutBtn = document.getElementById('logout-btn');
       if (user) {
-        document.getElementById('status').innerText = 'Login sebagai: ' + user.email;
+        authStatus.textContent = 'Logged in as: ' + user.email;
         logoutBtn.style.display = 'inline-block';
+        uploadSection.style.display = 'block';
+        musicListSection.style.display = 'block';
+        loadSongs(user.uid);
       } else {
-        document.getElementById('status').innerText = 'Belum login';
+        authStatus.textContent = 'Not logged in';
         logoutBtn.style.display = 'none';
+        uploadSection.style.display = 'none';
+        musicListSection.style.display = 'none';
+        songsUl.innerHTML = '';
       }
     });
+
+    async function uploadSong() {
+      const title = document.getElementById('song-title').value.trim();
+      const fileInput = document.getElementById('song-file');
+      if (!title) {
+        uploadStatus.textContent = 'Please enter song title';
+        return;
+      }
+      if (fileInput.files.length === 0) {
+        uploadStatus.textContent = 'Please select an audio file';
+        return;
+      }
+      const file = fileInput.files[0];
+      const user = auth.currentUser;
+      if (!user) {
+        uploadStatus.textContent = 'You must be logged in to upload';
+        return;
+      }
+
+      uploadStatus.textContent = 'Uploading...';
+
+      try {
+        // Upload file to Firebase Storage
+        const storageRef = ref(storage, `songs/${user.uid}/${Date.now()}_${file.name}`);
+        await uploadBytes(storageRef, file);
+
+        // Get download URL
+        const url = await getDownloadURL(storageRef);
+
+        // Save metadata to Firestore
+        await addDoc(collection(db, 'songs'), {
+          uid: user.uid,
+          title: title,
+          url: url,
+          createdAt: new Date()
+        });
+
+        uploadStatus.textContent = 'Upload successful';
+        document.getElementById('song-title').value = '';
+        fileInput.value = '';
+        loadSongs(user.uid);
+      } catch (error) {
+        uploadStatus.textContent = 'Upload failed: ' + error.message;
+      }
+    }
+
+    async function loadSongs(uid) {
+      songsUl.innerHTML = '';
+      const q = query(collection(db, 'songs'), where('uid', '==', uid), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        songsUl.innerHTML = '<li>No songs uploaded yet.</li>';
+        return;
+      }
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${data.title}</strong><br/>
+          <audio controls src="${data.url}"></audio>
+        `;
+        songsUl.appendChild(li);
+      });
+    }
   </script>
 
 </body>
