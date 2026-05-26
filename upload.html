@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Media</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Upload Media & Artikel</h1>
+</header>
+
+<section class="upload-box">
+
+  <h2>Upload Foto</h2>
+  <input type="file" id="photoInput" accept="image/*">
+  <button onclick="uploadPhoto()">Upload Foto</button>
+
+  <h2>Upload Video</h2>
+  <input type="file" id="videoInput" accept="video/*">
+  <button onclick="uploadVideo()">Upload Video</button>
+
+  <h2>Buat Artikel</h2>
+  <input type="text" id="articleTitle" placeholder="Judul Artikel">
+
+  <textarea id="articleContent" placeholder="Isi artikel..."></textarea>
+
+  <button onclick="publishArticle()">Publish Artikel</button>
+
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
