@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Roman Yosi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Login Account</h1>
+</header>
+
+<section class="upload-box">
+
+  <input type="email" id="email" placeholder="Email">
+
+  <input type="password" id="password" placeholder="Password">
+
+  <button onclick="register()">Register</button>
+
+  <button onclick="login()">Login</button>
+
+  <button onclick="logout()">Logout</button>
+
+  <p id="status"></p>
+
+</section>
+
+<script type="module">
+
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.register = function () {
+
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      document.getElementById('status').innerText = 'Register berhasil';
+    })
+    .catch(error => {
+      document.getElementById('status').innerText = error.message;
+    });
+}
+
+window.login = function () {
+
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      document.getElementById('status').innerText = 'Login berhasil';
+    })
+    .catch(error => {
+      document.getElementById('status').innerText = error.message;
+    });
+}
+
+window.logout = function () {
+
+  signOut(auth)
+    .then(() => {
+      document.getElementById('status').innerText = 'Logout berhasil';
+    })
+    .catch(error => {
+      document.getElementById('status').innerText = error.message;
+    });
+}
+
+</script>
+
+</body>
+</html>
