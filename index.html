@@ -2,213 +2,55 @@
 <html lang="id">
 
 <head>
-
   <meta charset="UTF-8">
-
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Login Roman Yosi</title>
 
-  <meta name="description"
-    content="Login account Roman Yosi Music Official Website">
-
   <link rel="stylesheet" href="style.css">
-
-  <style>
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: white;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-
-    header {
-      padding: 30px;
-      background: #151515;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 32px;
-    }
-
-    .upload-box {
-
-      max-width: 400px;
-
-      margin: 40px auto;
-
-      background: #1d1d1d;
-
-      padding: 30px;
-
-      border-radius: 15px;
-
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-
-    }
-
-    input {
-
-      width: 100%;
-
-      padding: 12px;
-
-      margin-top: 15px;
-
-      border: none;
-
-      border-radius: 8px;
-
-      background: #2b2b2b;
-
-      color: white;
-
-      font-size: 16px;
-
-      box-sizing: border-box;
-
-    }
-
-    button {
-
-      width: 100%;
-
-      padding: 12px;
-
-      margin-top: 15px;
-
-      border: none;
-
-      border-radius: 8px;
-
-      background: #00bfff;
-
-      color: white;
-
-      font-size: 16px;
-
-      cursor: pointer;
-
-      transition: 0.3s;
-
-    }
-
-    button:hover {
-      background: #009acd;
-    }
-
-    #status {
-
-      margin-top: 20px;
-
-      font-size: 15px;
-
-      color: #00ff99;
-
-      word-break: break-word;
-
-    }
-
-    .back-home {
-
-      display: inline-block;
-
-      margin-top: 20px;
-
-      color: white;
-
-      text-decoration: none;
-
-    }
-
-  </style>
-
 </head>
 
 <body>
 
   <header>
-
     <h1>Login Account</h1>
-
-    <p>Roman Yosi Music Official</p>
-
   </header>
 
   <section class="upload-box">
 
-    <input
-      type="email"
-      id="email"
-      placeholder="Masukkan Email">
+    <input type="email" id="email" placeholder="Email">
 
-    <input
-      type="password"
-      id="password"
-      placeholder="Masukkan Password">
+    <input type="password" id="password" placeholder="Password">
 
-    <button onclick="register()">
-      Register
-    </button>
+    <button onclick="register()">Register</button>
 
-    <button onclick="login()">
-      Login
-    </button>
+    <button onclick="login()">Login</button>
 
-    <button onclick="logout()">
-      Logout
-    </button>
+    <button onclick="logout()">Logout</button>
 
     <p id="status"></p>
-
-    <a href="index.html" class="back-home">
-      ← Kembali ke Home
-    </a>
 
   </section>
 
   <script type="module">
 
-    import {
-      initializeApp
-    } from
-    'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 
     import {
       getAuth,
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
       signOut
-    } from
-    'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
     const firebaseConfig = {
-
       apiKey: "AIzaSyASJUy17H37jS_sgAJA49otBh6LDJ3QAII",
-
-      authDomain:
-      "roman-yosi-music-record.firebaseapp.com",
-
-      projectId:
-      "roman-yosi-music-record",
-
-      storageBucket:
-      "roman-yosi-music-record.firebasestorage.app",
-
-      messagingSenderId:
-      "422122061031",
-
-      appId:
-      "1:422122061031:web:7f34069922208516043642",
-
-      measurementId:
-      "G-Y8KMVOWCJ8"
-
+      authDomain: "roman-yosi-music-record.firebaseapp.com",
+      projectId: "roman-yosi-music-record",
+      storageBucket: "roman-yosi-music-record.firebasestorage.app",
+      messagingSenderId: "422122061031",
+      appId: "1:422122061031:web:7f34069922208516043642",
+      measurementId: "G-Y8KMVOWCJ8"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -217,65 +59,49 @@
 
     window.register = function () {
 
-      const email =
-      document.getElementById('email').value;
+      const email = document.getElementById('email').value;
 
-      const password =
-      document.getElementById('password').value;
+      const password = document.getElementById('password').value;
 
-      createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
+      createUserWithEmailAndPassword(auth, email, password)
 
-      .then(() => {
+        .then(() => {
 
-        document.getElementById('status')
-        .innerText =
-        '✅ Register berhasil';
+          document.getElementById('status').innerText =
+            'Register berhasil';
 
-      })
+        })
 
-      .catch((error) => {
+        .catch((error) => {
 
-        document.getElementById('status')
-        .innerText =
-        '❌ ' + error.message;
+          document.getElementById('status').innerText =
+            error.message;
 
-      });
+        });
 
     }
 
     window.login = function () {
 
-      const email =
-      document.getElementById('email').value;
+      const email = document.getElementById('email').value;
 
-      const password =
-      document.getElementById('password').value;
+      const password = document.getElementById('password').value;
 
-      signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
+      signInWithEmailAndPassword(auth, email, password)
 
-      .then(() => {
+        .then(() => {
 
-        document.getElementById('status')
-        .innerText =
-        '✅ Login berhasil';
+          document.getElementById('status').innerText =
+            'Login berhasil';
 
-      })
+        })
 
-      .catch((error) => {
+        .catch((error) => {
 
-        document.getElementById('status')
-        .innerText =
-        '❌ ' + error.message;
+          document.getElementById('status').innerText =
+            error.message;
 
-      });
+        });
 
     }
 
@@ -283,21 +109,19 @@
 
       signOut(auth)
 
-      .then(() => {
+        .then(() => {
 
-        document.getElementById('status')
-        .innerText =
-        '✅ Logout berhasil';
+          document.getElementById('status').innerText =
+            'Logout berhasil';
 
-      })
+        })
 
-      .catch((error) => {
+        .catch((error) => {
 
-        document.getElementById('status')
-        .innerText =
-        '❌ ' + error.message;
+          document.getElementById('status').innerText =
+            error.message;
 
-      });
+        });
 
     }
 
