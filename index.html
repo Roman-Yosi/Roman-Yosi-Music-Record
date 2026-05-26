@@ -1,68 +1,104 @@
-<script type="module">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Firebase Auth - Roman Yosi Music Record</title>
+</head>
+<body>
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  <h2>Firebase Authentication Demo</h2>
 
-const firebaseConfig = {
-  apiKey: "ISI_ULANG_DARI_FIREBASE_CONSOLE",
-  authDomain: "roman-yosi-music-record.firebaseapp.com",
-  projectId: "roman-yosi-music-record",
-  storageBucket: "roman-yosi-music-record.appspot.com",
-  messagingSenderId: "422122061031",
-  appId: "1:422122061031:web:7f34069922208516e43642"
-};
+  <div id="auth-container">
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <br /><br />
+    <button onclick="register()">Register</button>
+    <button onclick="login()">Login</button>
+    <button onclick="loginWithGoogle()">Login with Google</button>
+    <button onclick="logout()" style="display:none;" id="logout-btn">Logout</button>
+  </div>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  <p id="status">Belum login</p>
 
-// REGISTER
-window.register = function () {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signInWithPopup,
+      GoogleAuthProvider,
+      signOut,
+      onAuthStateChanged
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      document.getElementById('status').innerText = 'Register berhasil';
-    })
-    .catch((error) => {
-      document.getElementById('status').innerText = error.message;
+    const firebaseConfig = {
+      apiKey: "AIzaSyASJUyi7H37jS_sgAJA49otBh6LDJ3QAiI",
+      authDomain: "roman-yosi-music-record.firebaseapp.com",
+      projectId: "roman-yosi-music-record",
+      storageBucket: "roman-yosi-music-record.firebasestorage.app",
+      messagingSenderId: "422122061031",
+      appId: "1:422122061031:web:7f3406992220a516e43642",
+      measurementId: "G-Y8KMVQWCJ8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    window.register = function() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          document.getElementById('status').innerText = 'Register berhasil';
+        })
+        .catch(error => {
+          document.getElementById('status').innerText = error.message;
+        });
+    };
+
+    window.login = function() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          document.getElementById('status').innerText = 'Login berhasil';
+        })
+        .catch(error => {
+          document.getElementById('status').innerText = error.message;
+        });
+    };
+
+    window.loginWithGoogle = function() {
+      signInWithPopup(auth, provider)
+        .then(result => {
+          document.getElementById('status').innerText = 'Login berhasil: ' + result.user.email;
+        })
+        .catch(error => {
+          document.getElementById('status').innerText = error.message;
+        });
+    };
+
+    window.logout = function() {
+      signOut(auth)
+        .then(() => {
+          document.getElementById('status').innerText = 'Logout berhasil';
+        });
+    };
+
+    onAuthStateChanged(auth, user => {
+      const logoutBtn = document.getElementById('logout-btn');
+      if (user) {
+        document.getElementById('status').innerText = 'Login sebagai: ' + user.email;
+        logoutBtn.style.display = 'inline-block';
+      } else {
+        document.getElementById('status').innerText = 'Belum login';
+        logoutBtn.style.display = 'none';
+      }
     });
-};
+  </script>
 
-// LOGIN
-window.login = function () {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      document.getElementById('status').innerText = 'Login berhasil';
-    })
-    .catch((error) => {
-      document.getElementById('status').innerText = error.message;
-    });
-};
-
-// LOGOUT
-window.logout = function () {
-  signOut(auth)
-    .then(() => {
-      document.getElementById('status').innerText = 'Logout berhasil';
-    });
-};
-
-// CHECK LOGIN STATUS
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    document.getElementById('status').innerText =
-      "Login sebagai: " + user.email;
-  }
-});
-
-</script>
+</body>
+</html>
