@@ -1,51 +1,118 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roman Yosi Login</title>
+
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>Login Roman Yosi</title>
+
+  <link rel="stylesheet" href="style.css">
 
   <style>
 
     body{
       background:#111;
       color:white;
-      font-family:Arial;
+      font-family:Arial,sans-serif;
+      margin:0;
+      padding:0;
       text-align:center;
-      padding:40px;
     }
 
-    .box{
-      max-width:400px;
-      margin:auto;
-      background:#1d1d1d;
+    header{
+      background:#1c1c1c;
       padding:30px;
+    }
+
+    h1{
+      margin:0;
+    }
+
+    .upload-box{
+
+      width:90%;
+      max-width:400px;
+
+      margin:40px auto;
+
+      background:#1d1d1d;
+
+      padding:30px;
+
       border-radius:15px;
+
+      box-shadow:0 0 10px rgba(0,0,0,0.5);
+
     }
 
     input{
+
       width:100%;
+
       padding:12px;
+
       margin-top:15px;
+
       border:none;
+
       border-radius:8px;
+
       box-sizing:border-box;
+
+      font-size:16px;
+
     }
 
     button{
+
       width:100%;
+
       padding:12px;
+
       margin-top:15px;
+
       border:none;
+
       border-radius:8px;
+
       background:#00aaff;
+
       color:white;
+
+      font-size:16px;
+
       cursor:pointer;
+
+    }
+
+    button:hover{
+      background:#008ecc;
     }
 
     #status{
+
       margin-top:20px;
-      color:#00ff99;
+
+      font-size:15px;
+
+      word-break:break-word;
+
+    }
+
+    .home{
+
+      display:inline-block;
+
+      margin-top:20px;
+
+      color:#00aaff;
+
+      text-decoration:none;
+
     }
 
   </style>
@@ -54,40 +121,70 @@
 
 <body>
 
-<div class="box">
+<header>
 
-<h1>Login Account</h1>
+  <h1>Login Account</h1>
 
-<input type="email" id="email" placeholder="Email">
+  <p>Roman Yosi Music Official</p>
 
-<input type="password" id="password" placeholder="Password">
+</header>
 
-<button id="registerBtn">Register</button>
+<section class="upload-box">
 
-<button id="loginBtn">Login</button>
+  <input
+    type="email"
+    id="email"
+    placeholder="Masukkan Email">
 
-<button id="logoutBtn">Logout</button>
+  <input
+    type="password"
+    id="password"
+    placeholder="Masukkan Password">
 
-<p id="status"></p>
+  <button id="registerBtn">
+    Register
+  </button>
 
-</div>
+  <button id="loginBtn">
+    Login
+  </button>
+
+  <button id="logoutBtn">
+    Logout
+  </button>
+
+  <p id="status"></p>
+
+  <a href="index.html" class="home">
+    ← Kembali ke Home
+  </a>
+
+</section>
 
 <script type="module">
 
 import { initializeApp }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
+
   getAuth,
+
   createUserWithEmailAndPassword,
+
   signInWithEmailAndPassword,
+
   signOut
+
 }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyASJUy17H37jS_sgAJA49otBh6LDJ3QAII",
+  apiKey:
+  "AIzaSyASJUy17H37jS_sgAJA49otBh6LDJ3QAII",
 
   authDomain:
   "roman-yosi-music-record.firebaseapp.com",
@@ -102,7 +199,10 @@ const firebaseConfig = {
   "422122061031",
 
   appId:
-  "1:422122061031:web:7f34069922208516043642"
+  "1:422122061031:web:7f34069922208516043642",
+
+  measurementId:
+  "G-Y8KMVOWCJ8"
 
 };
 
@@ -113,14 +213,35 @@ const auth = getAuth(app);
 const status =
 document.getElementById("status");
 
-document.getElementById("registerBtn")
-.addEventListener("click", ()=>{
+function showMessage(message,color){
+
+  status.innerText = message;
+
+  status.style.color = color;
+
+}
+
+document
+.getElementById("registerBtn")
+
+.addEventListener("click",()=>{
 
   const email =
   document.getElementById("email").value;
 
   const password =
   document.getElementById("password").value;
+
+  if(password.length < 6){
+
+    showMessage(
+      "Password minimal 6 karakter",
+      "orange"
+    );
+
+    return;
+
+  }
 
   createUserWithEmailAndPassword(
     auth,
@@ -130,22 +251,28 @@ document.getElementById("registerBtn")
 
   .then(()=>{
 
-    status.innerText =
-    "✅ Register berhasil";
+    showMessage(
+      "✅ Register berhasil",
+      "#00ff99"
+    );
 
   })
 
   .catch((error)=>{
 
-    status.innerText =
-    error.message;
+    showMessage(
+      "❌ " + error.message,
+      "red"
+    );
 
   });
 
 });
 
-document.getElementById("loginBtn")
-.addEventListener("click", ()=>{
+document
+.getElementById("loginBtn")
+
+.addEventListener("click",()=>{
 
   const email =
   document.getElementById("email").value;
@@ -161,36 +288,46 @@ document.getElementById("loginBtn")
 
   .then(()=>{
 
-    status.innerText =
-    "✅ Login berhasil";
+    showMessage(
+      "✅ Login berhasil",
+      "#00ff99"
+    );
 
   })
 
   .catch((error)=>{
 
-    status.innerText =
-    error.message;
+    showMessage(
+      "❌ " + error.message,
+      "red"
+    );
 
   });
 
 });
 
-document.getElementById("logoutBtn")
-.addEventListener("click", ()=>{
+document
+.getElementById("logoutBtn")
+
+.addEventListener("click",()=>{
 
   signOut(auth)
 
   .then(()=>{
 
-    status.innerText =
-    "✅ Logout berhasil";
+    showMessage(
+      "✅ Logout berhasil",
+      "#00ff99"
+    );
 
   })
 
   .catch((error)=>{
 
-    status.innerText =
-    error.message;
+    showMessage(
+      "❌ " + error.message,
+      "red"
+    );
 
   });
 
@@ -199,4 +336,5 @@ document.getElementById("logoutBtn")
 </script>
 
 </body>
+
 </html>
